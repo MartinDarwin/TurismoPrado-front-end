@@ -1,0 +1,121 @@
+html {
+    font-size: 14px;
+}
+
+#header {
+    background: url(/public/represaprado.png) no-repeat center;
+    background-size: cover;
+    height: 30vh;
+}
+
+body {
+font-family: var(--font-family);
+font-weight: normal;
+background: var(--surface-ground);
+color: var(--text-color);
+padding: 1rem;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+background: var(--surface-card);
+padding: 0.2rem;
+border-radius: 10px;
+margin-bottom: 1rem;
+}
+
+#contenedor{
+    background-color:#f3edf3;
+}
+
+#cabecera{
+    background-color:#f3edf3;
+    height:20%;
+}
+#menu{
+    height:10%;
+    background-color:#C8CACC;
+}
+#izquierda{
+    height:30%;
+    background-color:#e6ebf1;
+    float:left;
+    width:49.8%;
+}
+#derecha{
+    height:30%;
+    background-color:#e6ebf1;
+    float:right;
+    width:49.8%;
+}
+
+#derecha-1{
+  height:50%;
+  background-color:#0B213F;
+  float:right;
+  width:49.8%;
+}
+
+#pie{
+    height:20%;
+    background-color:#D3D1C1;
+    clear:both;
+}
+
+
+/*NavBar*/
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  margin: 0rem;
+  text-align: center;
+}
+
+.nav {
+  background-color: #007887;
+  color: white;
+  display: flex;  
+  align-items: stretch;
+  gap: 3rem;
+  padding: 0 4rem;  
+}
+
+.site-title {
+  font-size: 2rem;
+}
+
+.nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  font-size: 1.3rem;
+}
+
+.nav a {
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: .25rem;
+}
+
+.nav li.active {
+  background-color: #222651;
+}
+
+.nav li:hover {
+  background-color: #222651;
+}
+/*NavBar*/
+
+
