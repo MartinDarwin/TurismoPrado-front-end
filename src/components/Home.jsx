@@ -1,14 +1,16 @@
 import "../style.css";
 import React from "react";
-import Header from "./Header";
+import HeaderVisitor from "./HeaderVisitor";
 import Footer from "./Footer";
-import { Button } from "primereact/button";
+import Login from "./Login";
+import LoginAdm from "./LoginAdm";
+import CreateUser from "./CreateUser";
 
 const Home = () => {
   return (
     <div id="contenedor">
       <div id="cabecera">
-        <Header />
+        <HeaderVisitor />
       </div>
       <div className="card flex justify-content-center">
         <table class="default" width="100">
@@ -66,7 +68,13 @@ const Home = () => {
             </td>
             <td colspan="2">
               <div className="card flex justify-content-center">
-                <Button label="Suscribir Servicio" />
+                <Login/>
+              </div>
+              <div className="card flex justify-content-center">                
+                <CreateUser/>
+              </div>
+              <div className="card flex justify-content-center">
+                <LoginAdm/>
               </div>
             </td>
           </tr>

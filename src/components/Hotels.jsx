@@ -3,9 +3,6 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import ListHotels from "./ListHotels";
-import DetailHotel from "./DetailHotel";
-import Maps from "./Maps";
-import ReserveHotel from "./ReserveHotel";
 
 const Hotels = () => {
   return (

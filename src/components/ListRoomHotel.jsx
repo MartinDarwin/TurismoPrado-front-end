@@ -18,7 +18,6 @@ export default function ListRoomHotel(props) {
   //Funcion get para listar hoteles
   React.useEffect(() => {
     setCodigo(props.id);
-    console.log("Codigo = " + codigo);
     const url = "http://localhost:8088/rooms/idhotel/" + codigo;
     axios.get(url).then((response) => {
       setProducts(response.data);
@@ -29,10 +28,8 @@ export default function ListRoomHotel(props) {
     switch (product.inventoryStatus) {
       case "Disponible":
         return "success";
-
       case "Ocupado":
         return "danger";
-
       default:
         return null;
     }
@@ -59,7 +56,7 @@ export default function ListRoomHotel(props) {
             </div>
             <div className="flex flex-row lg:flex-column align-items-center lg:align-items-end gap-4 lg:gap-2">
               <span className="text-2xl font-semibold">${data.price}</span>
-              <ReserveHotel />
+              <ReserveHotel id={data.id}/>
               <Tag
                 value={data.inventoryStatus}
                 severity={getSeverity(data)}
@@ -85,13 +82,3 @@ export default function ListRoomHotel(props) {
   );
 }
 
-/*<Button
-  label="Reservar"
-  disabled={data.inventoryStatus === "Ocupado"}
-></Button>*/
-
-/*<img
-  className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-  src={`https://primefaces.org/cdn/primereact/images/product/${data.image}`}
-  alt={data.name}
-/>*/

@@ -9,7 +9,6 @@ import { Tag } from "primereact/tag";
 import "primeicons/primeicons.css";
 import DetailHotel from "./DetailHotel";
 import Maps from "./Maps";
-import ReserveHotel from "./ReserveHotel";
 import ListRoomHotel from "./ListRoomHotel";
 
 const initialFormState = {
@@ -57,6 +56,7 @@ const ListHotels = () => {
 
   const details = (hotel) => {
     setId(hotel.id);
+    console.log("hotel.id = " + hotel.id)
   };
 
   const itemTemplate = (hotels) => {

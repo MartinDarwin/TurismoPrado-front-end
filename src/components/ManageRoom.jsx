@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
-import { Calendar } from "primereact/calendar";
-import { Card } from "primereact/card";
 import axios from "axios";
 import ListManageRoom from "./ListManageRoom";
 
@@ -39,7 +35,6 @@ const ManageRoom = (props) => {
     });
   }, [props.id, codigo]);*/
 
-
   return (
     <div className="card flex justify-content-center">
       <Button
@@ -50,11 +45,11 @@ const ManageRoom = (props) => {
       <Dialog
         header="Gestionar Habitación"
         visible={visible}
-        style={{ width: "50vw" }}
+        style={{ width: "90vw" }}
         onHide={() => setVisible(false)}
       >
 
-      <ListManageRoom/>  
+      <ListManageRoom id = {props.id} />  
 
       </Dialog>
     </div>

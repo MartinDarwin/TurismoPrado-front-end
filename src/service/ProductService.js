@@ -2,7 +2,7 @@ export const ProductService = {
   getProductsData() {
     return [
       {
-        id: "1000",
+        id: "1",
         code: "f230fh0g3",
         name: "Mansion del Lago",
         description: "Mansión del Lago es un hotel Eco de lujo donde la aventura comienza con un paseo en bote de 20 minutos desde el puerto a través de la presa Prado-Tolima hasta el hotel el cual cuenta con una ubicación espectacular, belleza natural, montañas llenas de cascadas, cuevas y tranquilidad total.",
@@ -46,7 +46,7 @@ export const ProductService = {
         price: 150,
         category: "Clothing",
         quantity: 25,
-        inventoryStatus: "INSTOCK",
+        inventoryStatus: "Disponible",
         rating: 5,
       },
       {
@@ -58,7 +58,7 @@ export const ProductService = {
         price: 180,
         category: "Accessories",
         quantity: 73,
-        inventoryStatus: "INSTOCK",
+        inventoryStatus: "No disponible",
         rating: 4,
       },
       {
@@ -70,7 +70,7 @@ export const ProductService = {
         price: 120,
         category: "Accessories",
         quantity: 0,
-        inventoryStatus: "OUTOFSTOCK",
+        inventoryStatus: "Disponible",
         rating: 4,
       },
       {
@@ -82,7 +82,7 @@ export const ProductService = {
         price: 60,
         category: "Accessories",
         quantity: 5,
-        inventoryStatus: "LOWSTOCK",
+        inventoryStatus: "Disponible",
         rating: 3,
       },            
     ];

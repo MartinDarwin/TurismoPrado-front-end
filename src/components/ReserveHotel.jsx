@@ -1,199 +1,254 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { classNames } from "primereact/utils";
+import { ProductService } from "../service/ProductService";
+import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
+import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
-import { Card } from "primereact/card";
 import axios from "axios";
 
-const initialFormState = {
-  id: null,
-  code: "",
-  name: "",
-  description: "",
-  image: "",
-  price: null,
-  category: "",
-  quantity: null,
-  inventoryStatus: "",
-  rating: null,
-};
+export default function ReserveHotel(props) {
+  let emptyProduct = {
+    id: null,
+    name: "",
+    lastname: "",
+    phone: "",
+    email: "",
+    dateini: "",
+    dateend: "",
+    idroom: props.id,
+  };
 
-const ReserveHotel = (props) => {
-  const [visible, setVisible] = useState(false);
-  const [value, setValue] = useState("");
-  const [datetime1h, setDateTime1h] = useState(null);
-  const [datetime2h, setDateTime2h] = useState(null);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [hotels, setHotels] = useState(initialFormState);
-  const [codigo, setCodigo] = useState(1);
+  const [products, setProducts] = useState(null);
+  const [productDialog, setProductDialog] = useState(false);
+  const [product, setProduct] = useState(emptyProduct);
+  const [selectedProducts, setSelectedProducts] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [selectedType, setSelectedType] = useState(null);
+  const toast = useRef(null);
+  const [password, setPassword] = useState("");
+  const [repassword, setRepassword] = useState("");
 
-  //Funcion get para listar hoteles
-  /*React.useEffect(() => {
-    setCodigo(props.id);
-    const url = "http://localhost:8088/hotel/" + codigo;
-    axios.get(url).then((response) => {
-      setHotels(response.data);
-    });
-  }, [props.id, codigo]);*/
+  useEffect(() => {
+    ProductService.getProducts().then((data) => setProducts(data));
+  }, []);
+
+  const type = [
+    { name: "Cliente", code: "CL" },
+    { name: "Empresario", code: "EM" },
+  ];
+
+  const openNew = () => {
+    setProduct(emptyProduct);
+    setSubmitted(false);
+    setProductDialog(true);
+    setPassword("");
+    setRepassword("");
+  };
+
+  const hideDialog = () => {
+    setSubmitted(false);
+    setProductDialog(false);
+  };
+
+  const saveProduct = async () => {
+    setSubmitted(true);
+
+    if (
+      product.name.trim() &&
+      product.lastname.trim() &&
+      product.phone.trim() &&
+      product.email.trim() &&
+      product.dateini &&
+      product.dateend
+    ) {
+      let _products = [...products];
+
+      product.password = password;
+
+      try {
+        const url = "http://localhost:8088/reserve";
+        const response = await axios.post(url, product);
+      } catch (error) {
+        console.error(error);
+      }
+      toast.current.show({
+        severity: "success",
+        summary: "Successful",
+        detail: "Reserva Realizada",
+        life: 3000,
+      });
+
+      setProducts(_products);
+      setProductDialog(false);
+      setProduct(emptyProduct);
+    }
+  };
+
+  const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || "";
+    let _product = { ...product };
+
+    _product[`${name}`] = val;
+
+    setProduct(_product);
+  };
+
+  const leftToolbarTemplate = () => {
+    return (
+      <div className="flex flex-wrap gap-2">
+        <Button
+          label="Realizar Reserva"
+          icon="pi pi-external-link"
+          onClick={openNew}
+        />
+      </div>
+    );
+  };
+
+  const productDialogFooter = (
+    <React.Fragment>
+      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
+    </React.Fragment>
+  );
 
   return (
-    <div className="card flex justify-content-center">
-      <Button
-        label="Realizar Reserva"
-        icon="pi pi-external-link"
-        onClick={() => setVisible(true)}
-      />
+    <div>
+      <Toast ref={toast} />
+      <div className="card">
+        <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
+      </div>
+
       <Dialog
+        visible={productDialog}
+        style={{ width: "32rem" }}
+        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
         header="Reservar Habitación"
-        visible={visible}
-        style={{ width: "50vw" }}
-        onHide={() => setVisible(false)}
+        modal
+        className="p-fluid"
+        footer={productDialogFooter}
+        onHide={hideDialog}
       >
-        <div className="card flex justify-content-center">
-          <Card
-            //title={hotels.name}
-            subTitle="Hoteleria"
-            className="md:w-100rem"
-          ></Card>
-        </div>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <table class="default">
-            <tr>
-              <td>
-                <div className="card flex justify-content-left">
-                  <span className="p-float-label">
-                    <InputText
-                      id="nombres"
-                      value={value.nombres}
-                      //value={props.id}  id para relacionar al cliente con el hotel
-                      onChange={(e) => setValue(e.target.value)}
-                    />
-                    <label htmlFor="nombres">Nombres</label>
-                  </span>
-                </div>
-              </td>
+        <div className="field"></div>
 
-              <td>
-                <div className="card flex justify-content-left">
-                  <span className="p-float-label">
-                    <InputText
-                      id="apellidos"
-                      value={value.apellidos}
-                      onChange={(e) => setValue(e.target.value)}
-                    />
-                    <label htmlFor="apellidos">Apellidos</label>
-                  </span>
-                </div>
-              </td>
-
-              <td>
-                <div className="card flex justify-content-left">
-                  <span className="p-float-label">
-                    <InputText
-                      id="telefono"
-                      value={value.telefono}
-                      onChange={(e) => setValue(e.target.value)}
-                    />
-                    <label htmlFor="telefono">Telefono</label>
-                  </span>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <div className="card flex justify-content-left">
-                  <span className="p-float-label">
-                    <InputText
-                      id="email"
-                      value={value.telefono}
-                      onChange={(e) => setValue(e.target.value)}
-                    />
-                    <label htmlFor="email">E-mail</label>
-                  </span>
-                </div>
-              </td>
-
-              <td>
-                <div className="card flex justify-content-left">
-                  <span className="p-float-label">
-                    <InputText
-                      id="city"
-                      value={value.ciudad}
-                      onChange={(e) => setValue(e.target.value)}
-                    />
-                    <label htmlFor="city">Ciudad Origen</label>
-                  </span>
-                </div>
-              </td>
-
-              <td>
-                <div className="card flex justify-content-left">
-                  <span className="p-float-label">
-                    <InputText
-                      id="numpersonas"
-                      value={value.numpersonas}
-                      onChange={(e) => setValue(e.target.value)}
-                    />
-                    <label htmlFor="numpersonas">Número de personas</label>
-                  </span>
-                </div>
-              </td>
-
-            </tr>
-          </table>
-
-          <div className="card flex flex-wrap gap-3 p-fluid">
-            <div className="flex-auto">
-              <label htmlFor="calendar-12h" className="font-bold block mb-2">
-                Fecha y hora de ingreso
-              </label>
-              <Calendar
-                id="calendar-12h"
-                value={datetime1h}
-                onChange={(e) => setDateTime1h(e.value)}
-                dateFormat="dd/mm/yy"
-                showTime
-                hourFormat="12"
-              />
-            </div>
-            <div className="flex-auto">
-              <label htmlFor="calendar-12h" className="font-bold block mb-2">
-                Fecha y hora de retiro
-              </label>
-              <Calendar
-                id="calendar-12h"
-                value={datetime2h}
-                onChange={(e) => setDateTime2h(e.value)}
-                dateFormat="dd/mm/yy"
-                showTime
-                hourFormat="12"
-              />
-            </div>
-          </div>
-          <div className="card flex justify-content-center">
-            <Button
-              label="Cancelar"
-              icon="pi pi-times"
-              onClick={() => setVisible(false)}
-              className="p-button-text"
-            />
-            <Button
-              label="Confirmar"
-              icon="pi pi-check"
-              onClick={() => setVisible(false)}
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="name" className="font-bold">
+              Nombres
+            </label>
+            <InputText
+              id="name"
+              value={product.name}
+              onChange={(e) => onInputChange(e, "name")}
+              required
               autoFocus
+              className={classNames({
+                "p-invalid": submitted && !product.name,
+              })}
             />
+            {submitted && !product.name && (
+              <small className="p-error">Nombre es requerido</small>
+            )}
           </div>
-        </form>
+          <div className="field col">
+            <label htmlFor="lastname" className="font-bold">
+              Apellidos
+            </label>
+            <InputText
+              id="lastname"
+              value={product.lastname}
+              onChange={(e) => onInputChange(e, "lastname")}
+              required
+              className={classNames({
+                "p-invalid": submitted && !product.lastname,
+              })}
+            />
+            {submitted && !product.lastname && (
+              <small className="p-error">Apellido es requerido</small>
+            )}
+          </div>
+        </div>
+
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="phone" className="font-bold">
+              Telefono/Celular
+            </label>
+            <InputText
+              id="phone"
+              value={product.phone}
+              onChange={(e) => onInputChange(e, "phone")}
+              required
+              className={classNames({
+                "p-invalid": submitted && !product.phone,
+              })}
+            />
+            {submitted && !product.phone && (
+              <small className="p-error">Celular es requerido</small>
+            )}
+          </div>
+          <div className="field col">
+            <label htmlFor="email" className="font-bold">
+              E-mail
+            </label>
+            <InputText
+              id="email"
+              value={product.email}
+              onChange={(e) => onInputChange(e, "email")}
+              required
+              className={classNames({
+                "p-invalid": submitted && !product.email,
+              })}
+            />
+            {submitted && !product.email && (
+              <small className="p-error">Correo es requerido</small>
+            )}
+          </div>
+        </div>
+
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="dateini" className="font-bold block mb-2">
+              Fecha de Ingreso
+            </label>
+            <Calendar
+              name="dateini"
+              value={product.dateini}
+              onChange={(e) => onInputChange(e, "dateini")}
+              showTime
+              hourFormat="12"
+              className={classNames({
+                "p-invalid": submitted && !product.dateini,
+              })}
+            />
+            {submitted && !product.dateini && (
+              <small className="p-error">Fecha es requerido</small>
+            )}
+          </div>
+          <div className="field col">
+            <label htmlFor="dateend" className="font-bold block mb-2">
+              Fecha de Salida
+            </label>
+            <Calendar
+              name="dateend"
+              value={product.dateend}
+              onChange={(e) => onInputChange(e, "dateend")}
+              showTime
+              hourFormat="12"
+              className={classNames({
+                "p-invalid": submitted && !product.dateend,
+              })}
+            />
+            {submitted && !product.dateend && (
+              <small className="p-error">Fecha es requerido</small>
+            )}
+          </div>
+        </div>
+
       </Dialog>
     </div>
   );
-};
-export default ReserveHotel;
+}

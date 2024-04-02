@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { ProductService } from "../service/ProductService";
+import { ProductServiceEmp } from "../service/ProductServiceEmp";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { FileUpload } from "primereact/fileupload";
@@ -14,12 +14,15 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
-import Header from "./Header";
+import HeaderManager from "./HeaderManager";
 import axios from "axios";
 import ReserveHotel from "./ReserveHotel";
 import ManageRoom from "./ManageRoom";
+import { useNavigate } from "react-router-dom";
+import ManageReserveHotel from "./ManageReserveHotel";
 
-export default function ProductsDemo() {
+
+export default function ManageHotel() {
   let emptyProduct = {
     id: null,
     name: "",
@@ -29,8 +32,10 @@ export default function ProductsDemo() {
     price: 0,
     quantity: 0,
     rating: 0,
-    inventoryStatus: "INSTOCK",
+    inventoryStatus: "Disponible",
   };
+
+  let navegate = useNavigate();
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
@@ -43,14 +48,16 @@ export default function ProductsDemo() {
   const toast = useRef(null);
   const dt = useRef(null);
 
+  console.log("selectedProducts = "+ selectedProducts)
+
   useEffect(() => {
-    ProductService.getProducts().then((data) => setProducts(data));
+    ProductServiceEmp.getProducts().then((data) => setProducts(data));
   }, []);
 
-  //Funcion get para listar hoteles
-  /*React.useEffect(() => {
+  /*//Funcion get para listar hoteles
+  React.useEffect(() => {
     axios.get("http://localhost:8088/hotels").then((response) => {
-        setProducts(response.data);
+      setProducts(response.data);
     });
   }, []);*/
 
@@ -58,6 +65,14 @@ export default function ProductsDemo() {
     return value.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
+    });
+  };
+
+  const onUpload = () => {
+    toast.current.show({
+      severity: "info",
+      summary: "Success",
+      detail: "File Uploaded",
     });
   };
 
@@ -211,23 +226,28 @@ export default function ProductsDemo() {
     setProduct(_product);
   };
 
+  const gestionarReservas = () => {
+    navegate("/listreserve");
+  };
+
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
         <Button
-          label="New"
+          label="Nuevo"
           icon="pi pi-plus"
           severity="success"
           onClick={openNew}
         />
         <Button
-          label="Delete"
+          label="Eliminar"
           icon="pi pi-trash"
           severity="danger"
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
         />
-        <ManageRoom />
+        <ManageRoom id = {selectedProducts}/>
+        <ManageReserveHotel />
       </div>
     );
   };
@@ -294,15 +314,10 @@ export default function ProductsDemo() {
 
   const getSeverity = (product) => {
     switch (product.inventoryStatus) {
-      case "INSTOCK":
+      case "Disponible":
         return "success";
-
-      case "LOWSTOCK":
-        return "warning";
-
-      case "OUTOFSTOCK":
+      case "No disponible":
         return "danger";
-
       default:
         return null;
     }
@@ -363,7 +378,7 @@ export default function ProductsDemo() {
   return (
     <div>
       <div>
-        <Header />
+        <HeaderManager />
       </div>
       <div>
         <Toast ref={toast} />
@@ -391,13 +406,13 @@ export default function ProductsDemo() {
             <Column selectionMode="multiple" exportable={false}></Column>
             <Column
               field="name"
-              header="Name"
+              header="Nombre"
               sortable
               style={{ minWidth: "16rem" }}
             ></Column>
             <Column
               field="image"
-              header="Image"
+              header="Imagen"
               body={imageBodyTemplate}
             ></Column>
             <Column
@@ -408,27 +423,27 @@ export default function ProductsDemo() {
             ></Column>
             <Column
               field="price"
-              header="Price"
+              header="Precio"
               body={priceBodyTemplate}
               sortable
               style={{ minWidth: "8rem" }}
             ></Column>
             <Column
               field="category"
-              header="Category"
+              header="Categoria"
               sortable
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
               field="rating"
-              header="Reviews"
+              header="Rating"
               body={ratingBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
             <Column
               field="inventoryStatus"
-              header="Status"
+              header="Estado"
               body={statusBodyTemplate}
               sortable
               style={{ minWidth: "12rem" }}
@@ -460,7 +475,7 @@ export default function ProductsDemo() {
           )}
           <div className="field">
             <label htmlFor="name" className="font-bold">
-              Name
+              Nombre
             </label>
             <InputText
               id="name"
@@ -478,7 +493,7 @@ export default function ProductsDemo() {
           </div>
           <div className="field">
             <label htmlFor="description" className="font-bold">
-              Description
+              Descripción
             </label>
             <InputTextarea
               id="description"
@@ -491,47 +506,37 @@ export default function ProductsDemo() {
           </div>
 
           <div className="field">
-            <label className="mb-3 font-bold">Category</label>
+            <label className="mb-3 font-bold">Categoria</label>
             <div className="formgrid grid">
               <div className="field-radiobutton col-6">
                 <RadioButton
                   inputId="category1"
                   name="category"
-                  value="Accessories"
+                  value="Resort"
                   onChange={onCategoryChange}
-                  checked={product.category === "Accessories"}
+                  checked={product.category === "Resort"}
                 />
-                <label htmlFor="category1">Accessories</label>
+                <label htmlFor="category1">Resort</label>
               </div>
               <div className="field-radiobutton col-6">
                 <RadioButton
                   inputId="category2"
                   name="category"
-                  value="Clothing"
+                  value="Hotel"
                   onChange={onCategoryChange}
-                  checked={product.category === "Clothing"}
+                  checked={product.category === "Hotel"}
                 />
-                <label htmlFor="category2">Clothing</label>
+                <label htmlFor="category2">Hotel</label>
               </div>
               <div className="field-radiobutton col-6">
                 <RadioButton
                   inputId="category3"
                   name="category"
-                  value="Electronics"
+                  value="Alojamiento"
                   onChange={onCategoryChange}
-                  checked={product.category === "Electronics"}
+                  checked={product.category === "Alojamiento"}
                 />
-                <label htmlFor="category3">Electronics</label>
-              </div>
-              <div className="field-radiobutton col-6">
-                <RadioButton
-                  inputId="category4"
-                  name="category"
-                  value="Fitness"
-                  onChange={onCategoryChange}
-                  checked={product.category === "Fitness"}
-                />
-                <label htmlFor="category4">Fitness</label>
+                <label htmlFor="category3">Alojamiento</label>
               </div>
             </div>
           </div>
@@ -539,7 +544,7 @@ export default function ProductsDemo() {
           <div className="formgrid grid">
             <div className="field col">
               <label htmlFor="price" className="font-bold">
-                Price
+                Precio
               </label>
               <InputNumber
                 id="price"
@@ -560,6 +565,35 @@ export default function ProductsDemo() {
                 onValueChange={(e) => onInputNumberChange(e, "rating")}
               />
             </div>
+          </div>
+
+          <div className="field">
+            <label htmlFor="inventoryStatus" className="font-bold">
+              Estado
+            </label>
+            <InputText
+              id="inventoryStatus"
+              value={product.inventoryStatus}
+              onChange={(e) => onInputChange(e, "inventoryStatus")}
+              required
+              className={classNames({
+                "p-invalid": submitted && !product.inventoryStatus,
+              })}
+            />
+            {submitted && !product.name && (
+              <small className="p-error">Estado es requirido.</small>
+            )}
+          </div>
+          <div className="card flex justify-content-center">
+            <Toast ref={toast}></Toast>
+            <FileUpload
+              mode="basic"
+              name="demo[]"
+              url="/api/upload"
+              accept="image/*"
+              maxFileSize={1000000}
+              onUpload={onUpload}
+            />
           </div>
         </Dialog>
 

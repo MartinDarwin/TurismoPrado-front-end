@@ -6,9 +6,9 @@ export default function Navbar() {
       <ul>
         <CustomLink to="/">Inicio</CustomLink>
         <CustomLink to="/hotels">Hoteles</CustomLink>
-        <CustomLink to="/about">Restaurantes</CustomLink>
-        <CustomLink to="/about">Alquiler de Lanchas</CustomLink>
-        <CustomLink to="/managehotel">Gestionar Hotel</CustomLink>
+        <CustomLink to="/restaurants">Restaurantes</CustomLink>
+        <CustomLink to="/boats">Alquiler de Lanchas</CustomLink>
+        <CustomLink to="/managereserve">Reservas realizadas</CustomLink>
       </ul>
     </nav>
   )

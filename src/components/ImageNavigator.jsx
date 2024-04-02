@@ -20,7 +20,7 @@ export default function ImageNavigator(props) {
       setImages(response.data);
     });
   }, [props.id, codigo]);
-
+  
   const itemTemplate = (item) => {
     return (
       <img
@@ -30,16 +30,6 @@ export default function ImageNavigator(props) {
       />
     );
   };
-
-  /*const thumbnailTemplate = (item) => {
-    return (
-      <img
-        src={item.thumbnailImageSrc}
-        alt={item.alt}
-        style={{ display: "block" }}
-      />
-    );
-  };*/
 
   return (
     <div className="card">
